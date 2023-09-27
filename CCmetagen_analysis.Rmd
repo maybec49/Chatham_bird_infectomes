@@ -1,0 +1,434 @@
+---
+title: "CCmetagen"
+author: "R. M. Grimwood"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Library import
+```{r Libraries, message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(ggVennDiagram)
+library(phyloseq)
+library (RColorBrewer)
+library(reshape2)
+library(tidyverse)
+library(vegan)
+library(zoo)
+
+```
+
+## Phyloseq and GOI relative abundances (%)
+```{r Phyloseq}
+
+# Load data
+raw_CCMetagen_data <-read.csv("Bird_family_table_filtered_genus.csv",check.names=FALSE)
+
+# Add genus
+raw_CCMetagen_data$SuperKGenus <- paste(raw_CCMetagen_data$Superkingdom, raw_CCMetagen_data$Genus, sep="_")
+
+# Add unclassified
+raw_CCMetagen_data <- data.frame(lapply(raw_CCMetagen_data, function(x) {sub("Bacteria_$", "Bacteria_unclassified", x)}))
+raw_CCMetagen_data <- data.frame(lapply(raw_CCMetagen_data, function(x) {sub("Eukaryota_$", "Eukaryota_unclassified", x)}))
+raw_CCMetagen_data <- data.frame(lapply(raw_CCMetagen_data, function(x) {sub("Archaea_$", "Archaea_unclassified", x)}))
+
+# Sum
+CCMetagen_data <-raw_CCMetagen_data[,-which(names(raw_CCMetagen_data) %in% c("Phylum","Class","Order","Family", "Genus"))]
+
+CCMetagen_data[,1:23] <-mutate_all(CCMetagen_data[,1:23], function(x) as.numeric(as.character(x)))
+
+CCMetagen_data <- aggregate(. ~ Superkingdom+Kingdom+SuperKGenus,CCMetagen_data, sum)
+
+colnames(CCMetagen_data)[3] <- "Genus"
+
+
+# Separate samples and taxas
+taxa_raw <- as.matrix(CCMetagen_data[,1:3])
+#rownames(taxa_raw) <- taxa_raw[,3] 
+rownames(taxa_raw) <- paste(taxa_raw[,1], taxa_raw[,2], taxa_raw[,3], sep="_")
+abund_raw <- as.matrix(CCMetagen_data[,4:26])
+rownames(abund_raw) <- paste(taxa_raw[,1], taxa_raw[,2], taxa_raw[,3], sep="_")
+
+
+# Convert to phyloseq
+tax = tax_table(taxa_raw)
+taxa = otu_table(abund_raw, taxa_are_rows = TRUE)
+taxa
+
+CCMeta_physeq = phyloseq(taxa, tax)
+CCMeta_physeq
+
+# Plot
+plot_bar(CCMeta_physeq, fill = "Superkingdom")
+
+# Plot top families
+TopNOTUs <- names(sort(taxa_sums(CCMeta_physeq), TRUE)[1:16])
+TopFamilies <- prune_taxa(TopNOTUs, CCMeta_physeq)
+plot_bar(TopFamilies, fill = "Genus")
+
+
+bird_microbes = subset_taxa(CCMeta_physeq, Genus=="Eukaryota_Atoxoplasma" | Genus=="Bacteria_Brachyspira" | Genus=="	
+Bacteria_Campylobacter" | Genus=="Eukaryota_Cryptosporidium" | Genus=="Eukaryota_Eimeria" | Genus=="Bacteria_Enterococcus" | Genus=="Bacteria_Escherichia" | Genus=="Bacteria_Hafnia" | Genus=="Bacteria_Mycobacterium" | Genus=="Bacteria_Salmonella")
+
+plot_bar(bird_microbes, fill = "Genus")
+
+log_bird_microbes = (log(otu_table(bird_microbes)) + 1)
+log_bird_microbes
+
+bird_microbes_log <- transform_sample_counts(bird_microbes, function(otu) {log1p(otu)})
+
+bird_microbes_log_df = as(otu_table(bird_microbes_log), "matrix")
+# transpose if necessary
+if(taxa_are_rows(bird_microbes_log)){bird_microbes_log_df <- t(bird_microbes_log_df)}
+# Coerce to data.frame
+bird_microbes_log_df = as.data.frame(bird_microbes_log_df)
+bird_microbes_log_df_melted = melt(cbind(rownames(bird_microbes_log_df), bird_microbes_log_df))
+
+# Plot of relative abundance of GOI
+ggplot(bird_microbes_log_df_melted, aes(x = `rownames(bird_microbes_log_df)`, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "fill") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+```
+
+
+## Import standardised abundance
+```{r Stand abun}
+
+# Filter at genus level - remove rows with no genus or unknown genere
+genus =  raw_CCMetagen_data[!(is.na( raw_CCMetagen_data$Genus) |  raw_CCMetagen_data$Genus=="" | raw_CCMetagen_data$Genus=="unk_g"), ]
+rnames = genus$Genus
+genus = as.data.frame(lapply(genus[, 1:23], as.numeric))
+rownames(genus) = rnames
+# Filter for genera with abun more than 10
+genus = genus[rowSums(genus[,1:23])>10,]
+# Remove viruses
+genus = genus[-(899:900),]
+genus = t(genus)
+#write.csv(genus, "ccmetagen_NMDS.csv")
+
+
+# Import, standardise, and normalise data
+genus = read.table("ccmetagen_NMDS.csv", sep=',', header = TRUE)
+genus_stand = sweep(genus[,10:907],1,genus[,9],"/")
+genus_norm = sweep(genus_stand[,1:898],1,rowSums(genus_stand[,1:898]),"/")
+rownames(genus_norm) = genus[,1]
+rowSums(genus_norm)
+
+```
+
+
+## Alpha diversity
+```{r Alpha diversity}
+
+# Data for alpha diversity
+alpha_diversity = t(genus_norm)
+
+# Mangere black robin 
+# Extract species with >0 counts
+mangere_species= as.matrix(rowSums(alpha_diversity[,1:2]))
+dim(mangere_species)
+mangere = as.matrix(rownames(mangere_species)[mangere_species>0])
+dim(mangere)
+
+# Rangatira black robin
+rangatira_species = as.matrix(rowSums(alpha_diversity[,3:6]))
+dim(rangatira_species)
+# Extract species with >0 counts
+rangatira = as.matrix(rownames(rangatira_species)[rangatira_species>0])
+dim(rangatira)
+
+x = list(Mangere=mangere[,1], Rangatira=rangatira[,1])
+ggVennDiagram(x, category.names = c("Mangere", "Rangatira")) +
+  ggplot2::scale_fill_gradient(low="#008B9D",high = "#FBAF4B")
+
+
+# Richness
+# Species richness
+species_richness = apply(t(alpha_diversity[,1:6])>0,1,sum)
+species_richness
+
+# Box plot: species richness
+species_richness_matrix = as.matrix(species_richness)
+species_richness_matrix2 = cbind(species_richness_matrix, rep(c("Mangere", "Rangatira"), c(2,4)))
+
+# Extract moribund and harvest for T-test
+mangere_richness = species_richness_matrix2[1:2,1:2]
+rangatira_richness = species_richness_matrix2[3:6,1:2]
+
+# Combine moribund and harvest as two separate rows/cols
+richness_matrix = t(as.matrix(merge(zoo(mangere_richness[,1]), zoo(rangatira_richness[,1]))))
+class(richness_matrix) = "numeric" # make sure everything is numeric
+rownames(richness_matrix) = c("Mangere", "Rangatira")
+
+# Transpose and melt
+trichness = t(richness_matrix)
+melt_richness = melt(trichness)
+colnames(melt_richness) = c("1", "Group", "Species Richness")
+
+# Plot species richness
+ggplot(melt_richness, aes(x=Group, y=`Species Richness`, fill=Group)) + 
+  geom_boxplot() + 
+  geom_point(color="black", size=1, alpha=0.5) + 
+  ggtitle("Richness per Group") +
+  scale_fill_manual(values = c("#008B9D", "#FBAF4B")) +
+  theme_light() 
+
+# T-test: species richness
+# Species richness
+t.test(as.numeric(mangere_richness[,1]), as.numeric(rangatira_richness[,1]),
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95)
+
+
+# Shannon diversity
+shannon = apply(alpha_diversity[,1:6],2,diversity,index="shannon") 
+shannon
+
+# Box plot: Shannon diversity
+shannon_matrix = as.matrix(shannon)
+shannon_matrix = cbind(shannon_matrix, rep(c("Mangere", "Rangatira"), c(2,4)))
+
+# Extract islands for T-test
+mangere_shannon = shannon_matrix[1:2,1:2]
+rangatira_shannon = shannon_matrix[3:6,1:2]
+
+# Combine moribund and harvest as two separate rows/cols
+shannon_matrix = t(as.matrix(merge(zoo(mangere_shannon[,1]), zoo(rangatira_shannon[,1]))))
+class(shannon_matrix) = "numeric" # make sure everything is numeric
+rownames(shannon_matrix) = c("Mangere", "Rangatira")
+
+# Transpose and melt
+tshannon = t(shannon_matrix)
+melt_shannon = melt(tshannon)
+colnames(melt_shannon) = c("1", "Group", "Shannon Index")
+
+# Plot species richness
+ggplot(melt_shannon, aes(x=Group, y=`Shannon Index`, fill=Group)) + 
+  geom_boxplot() + 
+  geom_point(color="black", size=1, alpha=0.5) + 
+  ggtitle("Shannon Index per Group") +
+  scale_fill_manual(values = c("#008B9D", "#FBAF4B")) +
+  theme_light() 
+
+# T-test: shannon diversity
+t.test(as.numeric(mangere_shannon[,1]), as.numeric(rangatira_shannon[,1]),
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95)
+
+```
+
+
+## NMDS
+```{r NMDS}
+
+# Seed
+set.seed(10)
+
+# Create distance matrix
+vdist= vegdist(genus_norm, "bray")
+
+# Preform NMDS
+nmds = metaMDS(vdist, distance = "bray", trymax = 250, k = 3)
+stressplot(nmds)
+plot(nmds, type='t', display=c('site', 'species'))
+
+# Extract NMDS with ggplot
+nmds_points = as.data.frame(nmds$points)
+nmds_points = cbind(nmds_points, genus[,1:6])
+
+# Statistics and plotting
+adonis2(formula = vdist~Location, data = nmds_points, method = "bray") 
+adonis2(formula = vdist~Age, data = nmds_points, method = "bray")
+adonis2(formula = vdist~Species, data = nmds_points, method = "bray")
+adonis2(formula = vdist~Taxonomy, data = nmds_points, method = "bray")
+adonis2(formula = vdist~Taxonomy*Location, data = nmds_points, method = "bray")
+adonis2(formula = vdist~Taxonomy+Location, data = nmds_points, method = "bray")
+adonis2(formula = vdist~Location+Taxonomy, data = nmds_points, method = "bray")
+
+
+# Same plot style as virome ones:
+ggplot(nmds_points, aes(x=MDS1, y=MDS2, color=Taxonomy)) + geom_point(aes(size=4)) +
+  scale_shape(solid = FALSE) +
+  labs(title = "NMDS of Chatham Birds Microbiomes (ccmetagen)",
+       x = "NMDS Axis 1",
+       y = "NMDS Axis 2",
+       colour = "Species",
+       shape = "Location") + theme_light()
+
+ggplot(nmds_points, aes(x=MDS1, y=MDS2, color=Location)) + geom_point(aes(size=4)) +
+  scale_shape(solid = FALSE) +
+  labs(title = "NMDS of Chatham Birds Microbiomes (ccmetagen)",
+       x = "NMDS Axis 1",
+       y = "NMDS Axis 2",
+       colour = "Species",
+       shape = "Location") + theme_light()
+
+```
+
+
+# Alpha diversity of passerines vs procellaria
+```{r Alpha diversity of passerine vs seabirds}
+
+# Passerines:1:6, 9:10
+# Seabirds: 7:8, 11:18
+
+# Passerines
+# Extract species with >0 counts
+passerine_species= as.matrix(rowSums(alpha_diversity[,c(1:6,9:10)]))
+dim(passerine_species)
+passerine = as.matrix(rownames(passerine_species)[passerine_species>0])
+dim(passerine)
+
+# Seabirds
+procellaria_species = as.matrix(rowSums(alpha_diversity[,c(7:8, 11:18)]))
+dim(procellaria_species)
+# Extract species with >0 counts
+procellaria = as.matrix(rownames(procellaria_species)[procellaria_species>0])
+dim(procellaria)
+
+x = list(Passerine=passerine[,1], Procellaria=procellaria[,1])
+ggVennDiagram(x, category.names = c("Passerines", "Procellaria")) +
+  ggplot2::scale_fill_gradient(low="Olivedrab4",high = "Olivedrab3")
+
+
+# BBP Mangere: 13:14
+# BBP Rangatira: 17:18
+
+# Mangere BBP
+# Extract species with >0 counts
+mangereBBP_species = as.matrix(rowSums(alpha_diversity[,c(13:14)]))
+dim(mangereBBP_species)
+mangereBBP = as.matrix(rownames(mangereBBP_species)[mangereBBP_species>0])
+dim(mangereBBP)
+
+# Rangatira BBP
+rangatiraBBP_species = as.matrix(rowSums(alpha_diversity[,c(17:18)]))
+dim(rangatiraBBP_species)
+# Extract species with >0 counts
+rangatiraBBP = as.matrix(rownames(rangatiraBBP_species)[rangatiraBBP_species>0])
+dim(rangatiraBBP)
+
+x = list(MangereBBP=mangereBBP[,1], RangatiraBBP=rangatiraBBP[,1])
+ggVennDiagram(x, category.names = c("Mangere BBP", "Rangatira BBP")) +
+  ggplot2::scale_fill_gradient(low="#008B9D",high = "#FBAF4B")
+
+
+
+# SS Mangere: 11:12
+# SS Rangatira: 16
+
+# Mangere SS
+# Extract species with >0 counts
+mangereSS_species = as.matrix(rowSums(alpha_diversity[,c(11:12)]))
+dim(mangereSS_species)
+mangereSS = as.matrix(rownames(mangereSS_species)[mangereSS_species>0])
+dim(mangereSS)
+
+# Rangatira SS
+rangatiraSS_species = as.matrix(alpha_diversity[,16])
+dim(rangatiraSS_species)
+# Extract species with >0 counts
+rangatiraSS = as.matrix(rownames(rangatiraSS_species)[rangatiraSS_species>0])
+dim(rangatiraSS)
+
+x = list(MangereSS=mangereSS[,1], RangatiraSS=rangatiraSS[,1])
+ggVennDiagram(x, category.names = c("Mangere SS", "Rangatira SS")) +
+  ggplot2::scale_fill_gradient(low="#008B9D",high = "#FBAF4B")
+
+
+
+
+
+
+# Richness
+# Species richness
+species_richness = apply(t(alpha_diversity[,c(1:6,9:10,7:8, 11:18)])>0,1,sum)
+species_richness
+
+# Box plot: species richness
+species_richness_matrix = as.matrix(species_richness)
+species_richness_matrix2 = cbind(species_richness_matrix, rep(c("Passerine", "Procellaria"), c(8,10)))
+
+# Extract moribund and harvest for T-test
+passerine_richness = species_richness_matrix2[1:8,1:2]
+procellaria_richness = species_richness_matrix2[9:18,1:2]
+
+# Combine moribund and harvest as two separate rows/cols
+richness_matrix = t(as.matrix(merge(zoo(passerine_richness[,1]), zoo(procellaria_richness[,1]))))
+class(richness_matrix) = "numeric" # make sure everything is numeric
+rownames(richness_matrix) = c("Passerine", "Procellaria")
+
+# Transpose and melt
+trichness = t(richness_matrix)
+melt_richness = melt(trichness)
+colnames(melt_richness) = c("1", "Group", "Species Richness")
+
+# Plot species richness
+ggplot(melt_richness, aes(x=Group, y=`Species Richness`, fill=Group)) + 
+  geom_boxplot() + 
+  geom_point(color="black", size=1, alpha=0.5) + 
+  ggtitle("Richness per Group") +
+  scale_fill_manual(values = c("#008B9D", "#FBAF4B")) +
+  theme_light() 
+
+# T-test: species richness
+
+# Species richness
+t.test(as.numeric(passerine_richness[,1]), as.numeric(procellaria_richness[,1]),
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95)
+
+
+
+
+# Shannon diversity
+shannon = apply(alpha_diversity[,c(1:6,9:10,7:8, 11:18)],2,diversity,index="shannon") 
+shannon
+
+# Box plot: Shannon diversity
+shannon_matrix = as.matrix(shannon)
+shannon_matrix = cbind(shannon_matrix, rep(c("Passerine", "Procellaria"), c(8,10)))
+
+# Extract islands for T-test
+passerine_shannon = shannon_matrix[1:8,1:2]
+procellaria_shannon = shannon_matrix[9:18,1:2]
+
+# Combine moribund and harvest as two separate rows/cols
+shannon_matrix = t(as.matrix(merge(zoo(passerine_shannon[,1]), zoo(procellaria_shannon[,1]))))
+class(shannon_matrix) = "numeric" # make sure everything is numeric
+rownames(shannon_matrix) = c("Passerine", "Procellaria")
+
+# Transpose and melt
+tshannon = t(shannon_matrix)
+melt_shannon = melt(tshannon)
+colnames(melt_shannon) = c("1", "Group", "Shannon Index")
+
+# Plot species richness
+ggplot(melt_shannon, aes(x=Group, y=`Shannon Index`, fill=Group)) + 
+  geom_boxplot() + 
+  geom_point(color="black", size=1, alpha=0.5) + 
+  ggtitle("Shannon Index per Group") +
+  scale_fill_manual(values = c("#008B9D", "#FBAF4B")) +
+  theme_light() 
+
+# T-test: shannon diversity
+t.test(as.numeric(passerine_shannon[,1]), as.numeric(procellaria_shannon[,1]),
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95)
+
+
+```

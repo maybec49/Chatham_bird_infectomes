@@ -1,0 +1,16 @@
+﻿Sample.name,Species,Scientific name,Taxonomy,Age,Location,Num.indiv,Picornavirales,Picornaviridae; Hepatovirus,Picornaviridae; Megrivirus,Picornaviridae; Passerivirus,Picornaviridae; Phopivirus,Astroviridae,Herpesviridae,Rhabdoviridae,Hepeviridae,Picobirnaviridae,Caliciviridae,Reoviridae; Rotavirus A,Reoviridae; Rotavirus D,Papillomaviridae,Hantaviridae,Arenaviridae,Hepadnaviridae,Adenoviridae,Flaviviridae
+BM1,Black robin,Petroica traversi,Passeriformes; Petroicidae,Adult,Mangere,16,0,0,0,13.96,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+BM2,Black robin,Petroica traversi,Passeriformes; Petroicidae,Pullus,Mangere,11,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4
+BR1;2,Black robin,Petroica traversi,Passeriformes; Petroicidae,Adult,Rangatira,16;16,1,30,0,0,0,0,0,0,4,1,0,0,0,0,0,0,0,0,27
+BR3;4,Black robin,Petroica traversi,Passeriformes; Petroicidae,Juvenile,Rangatira,16;17,0,70.63,0,0,0,0,1,37,0,0,0,0,0,0,0,0,0,0,20
+OM1,Fairy prion,Pachyptila turtur,Procellariiformes; Procellariidae,Adult,Mangere,5,0,0,0,0,0,0,0,11,0,0,0,0,14,0,0,0,0,0,0
+OM2,Fairy prion,Pachyptila turtur,Procellariiformes; Procellariidae,Chick,Mangere,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+OM3,Starling,Sturnus vulgaris,Passeriformes; Sturnidae,Adult,Mangere,1,0,0,0,286,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+OM4,Starling,Sturnus vulgaris,Passeriformes; Sturnidae,Chick,Mangere,4,11,0,0,2400854.65,0,24,0,0,0,0,14,496,0,0,0,0,0,0,0
+OM5;6,Sooty shearwater ,Ardenna grisea,Procellariiformes; Procellariidae,Adult,Mangere,12;11,1,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,0
+OM7,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Adult,Mangere,3,282,0,0,0,0,122,0,0,0,0,0,0,1058.34,0,0,0,0,0,0
+OM8,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Chick,Mangere,12,0,151.95,89,0,21.67,90,0,0,0,0,17,0,39,0,0,0,0,0,0
+OM9,Grey-backed storm petrel,Garrodia nereis,Procellariiformes; Oceanitidae,Adult,Mangere,6,0,0,0,1131,0,0,0,0,0,0,0,0,0,1313.52,0,0,55,0,656.99
+OR1,Sooty shearwater ,Ardenna grisea,Procellariiformes; Procellariidae,Adult,Rangatira,10,0,0,0,0,0,0,420.83,0,0,0,0,0,0,0,0,0,0,0,0
+OR2;3,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Adult,Rangatira,9;9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+SP1,Shore plover,Thinornis novaeseelandiae,Charadriiformes; Charadriidae,Adult,Rangatira,16,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0

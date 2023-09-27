@@ -1,0 +1,16 @@
+,Adenoviridae,Astroviridae,Caliciviridae,Flaviviridae,Hepadnaviridae,Herpesviridae,Papillomaviridae,Picornavirales,Picornaviridae,Reoviridae,Total.virome,Species,Scientific.name,Taxonomy,Age,Location,Num.indiv,Disease.status,Library.reads
+BM1,0,0,0,0,0,0,0,0,0.00000019,0,0.006819152,Black robin,Petroica traversi,Passeriformes,Adult,Mangere,16,Wild/unknown,73434233
+BM2,0,0,0,7.02E-08,0,0,0,1.40E-07,0,0,0.001488843,Black robin,Petroica traversi,Passeriformes,Pullus,Mangere,11,Wild/unknown,56965566
+OM1,0,0,0,0,0,0,0,0,0,0.000000212,0.000127399,Fairy prion,Pachyptila turtur,Procellariiformes,Adult,Mangere,5,Wild/unknown,65980333
+OM2,0,0,0,0,0,0,0,0,0,0,0.013927956,Fairy prion,Pachyptila turtur,Procellariiformes,Chick,Mangere,1,Wild/unknown,56092106
+OM3,0,0,0,0,0,0,0,0,0.000004,0,0.00925664,Starling,Sturnus vulgaris,Passeriformes,Adult,Mangere,1,Wild/unknown,71422281
+OM4,0,3.65E-07,2.13E-07,0,0,0,0,1.67E-07,0.036556731,0.00000755,0.033650349,Starling,Sturnus vulgaris,Passeriformes,Chick,Mangere,4,Wild/unknown,65674763
+OM5_6,2.62E-08,0,0,0,2.89E-07,0.001142499,2.62E-07,2.04E-08,0,0,0.002293825,Sooty shearwater ,Ardenna grisea,Procellariiformes,Adult,Mangere,23,Wild/unknown,125242506
+OM7,0,1.53E-06,0,0,0,0,0,3.54E-06,0,0.0000133,0.006023859,Broad-billed prion,Pachyptila vittata,Procellariiformes,Adult,Mangere,3,Wild/unknown,79732781
+OM8,0,1.31E-06,2.47E-07,0,0,0,0,0,0.000003804,0.000000566,0.002798774,Broad-billed prion,Pachyptila vittata,Procellariiformes,Chick,Mangere,12,Wild/unknown,68927944
+OM9,0,0,0,1.19E-05,9.95E-07,0,2.38E-05,0,0.0000205,0,0.007702419,Grey-backed storm petrel,Garrodia nereis,Procellariiformes,Adult,Mangere,6,Wild/unknown,55283513
+BR1_2,0,0,0,3.97E-07,0,0,0,3.09E-07,0.000000441,0,0.040561914,Black robin,Petroica traversi,Passeriformes,Adult,Rangatira,32,Wild/unknown,149235173
+BR3_4,0,0,0,3.05E-07,0,7.22E-07,0,0,0.00000108,0,0.119054354,Black robin,Petroica traversi,Passeriformes,Adult,Rangatira,,Wild/unknown,154916181
+OR1,0,0,0,0,0,6.48E-06,0,0,0,0,2.88E-05,Sooty shearwater ,Ardenna grisea,Procellariiformes,Adult,Rangatira,10,Wild/unknown,64910496
+OR2_3,7.68E-09,0,0,0,0,0,0,0,0,0,0.000429009,Broad-billed prion,Pachyptila vittata,Procellariiformes,Adult,Rangatira,18,Wild/unknown,130259323
+SP1,0,0,0,0,0,2.78E-08,0,0,0,0,0.000275879,Shore plover,Thinornis novaeseelandiae,Charadriiformes; Charadriidae,Adult,Rangatira,16,Wild/unknown,71824685

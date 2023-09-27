@@ -1,0 +1,229 @@
+---
+title: "Black_Robin_Virome_Analysis"
+author: "R. M. Grimwood"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+```{r Library imports, message=FALSE, warning=FALSE}
+
+# Libraries
+library(dichromat)
+library(ggord)
+library(ggplot2)
+library(ggraph)
+library(igraph)
+library(RColorBrewer)
+library(reshape2)
+library(tidyverse)
+library(vegan)
+library(viridis)
+library(zoo)
+
+```
+
+## Files and metadata
+```{r Import data}
+
+# Standardised viral abundances
+# Notes: 
+# BR1 and BR2 (adults)
+# BR3 and BR4 (juveniles)
+# OM5 and OM6 (adults)
+# OR2 and OR3 (adults)
+abundances = read.table('BR_standardised_abundances.csv', sep=',', header=TRUE)
+
+# Meta data
+meta_data = abundances[,2:9]
+
+# Presence/absences of viruses per library
+presence_absence = read.table('BR_heatmap.csv', sep=',', header=TRUE)
+
+# Sequencing depth
+depth = as.data.frame(meta_data[,8])
+depth = cbind(abundances[,1], depth)
+rownames(depth) = depth[,1]
+
+depth[,1] = factor(depth[,1], levels = rownames(depth))
+colnames(depth) = c("V1", "V2")
+
+ggplot(data=as.data.frame(depth), aes(x=V1, y=V2)) +
+  geom_bar(stat="identity") + theme_light()
+
+```
+
+## Presence/absence
+```{r Presence/absence}
+
+# Create table for heatmap
+heatmap = cbind(presence_absence[,1], presence_absence[,8:26])
+rownames(heatmap) = heatmap[,1]
+heatmap = heatmap[,-1]
+
+# Sort viral families in ascending alphabetical order
+virus_names_in_order = sort(colnames(heatmap))
+heatmap = heatmap[, virus_names_in_order]
+
+# Create PA
+OneOrMorePresent = heatmap>0
+colnames(OneOrMorePresent) =  colnames(heatmap)
+
+# Convert T/F to 1/0
+heatmap2 = OneOrMorePresent*1
+heatmap2_m = melt(heatmap2)
+
+# Order x-axis
+ggplot(data = heatmap2_m) + 
+  aes(x=heatmap2_m[,2], y=heatmap2_m[,1], fill=factor(value)) + 
+  geom_bin_2d(stat = "bin2d", show.legend = T) + 
+  scale_fill_manual(values=c("0"="white", "1"= "#F68725")) +
+  theme_light() +
+  theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+
+```
+
+
+## Heat map of abundances
+```{r Heat map}
+
+# Select data
+hm_data = read.table('avian_viromes_NMDS.csv', sep=',', header=TRUE, row.names = 1)
+
+# Normalise by viral genre
+hm_data = sweep(hm_data[,1:10],1,rowSums(hm_data[,1:10]),"/")
+hm_data = cbind(rownames(hm_data), hm_data)
+hm_data[4,2:11] = 0 # Remove NaNs
+
+# Format
+hm_data_melt = melt(hm_data)
+
+# Reorder samples
+hm_data_melt$`rownames(hm_data)` = factor(hm_data_melt$`rownames(hm_data)`, levels=rownames(hm_data))
+
+# Plot
+ggplot(hm_data_melt, aes(x = `rownames(hm_data)`, y = variable, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "#FECF1C") + 
+  labs(x = "Sample", y = "", fill = "Viral Abundance") +
+  theme_light()
+
+ggplot(hm_data_melt, aes(x = `rownames(hm_data)`, y = variable, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "#F68725") + 
+  labs(x = "Sample", y = "", fill = "Viral Abundance") + 
+  theme_light()
+
+ggplot(hm_data_melt, aes(x = `rownames(hm_data)`, y = variable, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "olivedrab3") + 
+  labs(x = "Sample", y = "", fill = "Viral Abundance") + 
+  theme_light()
+
+```
+
+
+## Beta diversity and abundances
+```{r Diversity}
+
+# Set seed
+set.seed(13)
+
+# Select data
+nmds_data = read.table('avian_viromes_NMDS.csv', sep=',', header=TRUE, row.names = 1)
+nmds_norm_data = sweep(nmds_data[,1:10],1,rowSums(nmds_data[,1:10]),"/")
+nmds_norm_data = nmds_norm_data[-4,]
+
+# Set up distance matrix - Bray-Curtis distance
+vdist= vegdist(nmds_norm_data, "bray")
+
+# Preform NMDS
+nmds = metaMDS(vdist, distance = "bray", trymax = 250, k = 2)
+stressplot(nmds)
+plot(nmds, type='t', display=c('site', 'species'))
+
+# Extract NMDS with ggplot
+nmds_points = as.data.frame(nmds$points)
+nmds_points = cbind(nmds_points, nmds_data[-4,c(12,14:16)])
+nmds_points$Age[nmds_points$Age == "Chick" | nmds_points$Age == "Pullus" | nmds_points$Age == "Juvenile"] = "C"
+nmds_points$Taxonomy2 = word(nmds_points$Taxonomy, 1)
+
+# Statistics and plotting
+adonis2(formula = vdist~Location, data = nmds_points, method = "bray") # Location
+adonis2(formula = vdist~Age, data = nmds_points, method = "bray") # Age
+adonis2(formula = vdist~Species, data = nmds_points, method = "bray") # Species
+adonis2(formula = vdist~Taxonomy2, data = nmds_points, method = "bray") # Taxonomy
+adonis2(formula = vdist~Location+Taxonomy2, data = nmds_points, method = "bray")
+adonis2(formula = vdist~Taxonomy2*Location, data = nmds_points, method = "bray")
+
+# Plot NMDS
+ggplot(nmds_points, aes(x=MDS1, y=MDS2, color=Species)) + geom_point(aes(shape=Location)) +
+  scale_shape(solid = FALSE) +
+  labs(title = "NMDS of Chatham Birds Viromes",
+       x = "NMDS Axis 1",
+       y = "NMDS Axis 2",
+       colour = "Species",
+       shape = "Location") + theme_minimal() + geom_text(aes(x = MDS1, y = MDS2, label = rownames(nmds_points)), size = 3)
+
+# Same plot style as microbiome ones:
+ggplot(nmds_points, aes(x=MDS1, y=MDS2, color=Taxonomy2)) + geom_point(aes(size=4)) +
+  scale_shape(solid = FALSE) +
+  labs(title = "NMDS of Chatham Birds Viromes",
+       x = "NMDS Axis 1",
+       y = "NMDS Axis 2",
+       colour = "Species",
+       shape = "Location") + theme_light()
+
+# Conclusions: effect of species on viromes is significant
+
+
+
+# Normalised abundances
+nmds_norm_data_melted = cbind(rownames(nmds_norm_data), nmds_norm_data)
+nmds_norm_data_melted = t(nmds_norm_data_melted)
+nmds_norm_data_melted = melt(nmds_norm_data_melted)
+
+nmds_norm_data_melted = nmds_norm_data
+nmds_norm_data_melted = t(nmds_norm_data_melted)
+nmds_norm_data_melted = melt(nmds_norm_data_melted)
+
+# Plot normalised abundances
+ggplot(data=nmds_norm_data_melted, aes(y=value, x=Var2, fill=Var1)) +
+  geom_bar(stat="identity") + theme_light() +
+  labs(title = "Normalised abundances of vertebrate-associated viruses",
+       x = "Samples",
+       y = "Normalised abundance (%)") + theme_minimal()
+
+
+```
+
+
+```{r Network}
+
+# Additional libraries
+library(igraph)
+library(visNetwork)
+
+# Bipartite netowrk
+Diversity = read.csv("avian_viromes_RG_condensed.csv")
+Data = reshape2::melt(Diversity, id.vars=c("Library","Species","Scientific.name","Taxonomy","Age","Location","Individuals","Reads"),
+                     variable.name="Virus_Family", value.name="Count")
+
+Datanozero = subset(Data, Data$Count>0)
+edgelist = Datanozero[,c(3,9)]
+
+g = graph.data.frame(edgelist, directed=FALSE)
+V(g)$type = V(g)$name %in% edgelist[,1]
+V(g)$shape = ifelse(V(g)$type, "dot", "star")
+V(g)$label.cex = ifelse(V(g)$type, 0.5, 0.6)
+V(g)$label.color = ifelse(V(g)$type, "blue", "black")
+V(g)$color = ifelse(V(g)$type, "#9BCB3C", "black")
+visIgraph(g)
+
+```
