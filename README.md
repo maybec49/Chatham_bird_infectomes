@@ -4,6 +4,8 @@ Supplementary code and data for Chatham Island bird infectome paper.
 
 <b>Files</b>
 
+Supplementary_data_S1.xlsx - Extended data detailing all the viral polymerases found, accession numbers, closest BLAST hits, sequences (nucleotide and amino acid), other non-viral proteins identified, and PA of non-viral pathogens in the assembled transcriptomes
+
 Black_Robin_Viromes.Rmd - R code used to generate bird virome results
 
 CCmetagen_analysis.Rmd - R code used to generate bird (non-viral) microbiome results
