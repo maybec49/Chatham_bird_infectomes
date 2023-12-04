@@ -1,0 +1,20 @@
+﻿Sample.name,Species,Scientific name,Taxonomy,Age,Location,Num.indiv,Disease.status,Library.reads,Picornaviridae,Astroviridae,Herpesviridae,Caliciviridae,Reoviridae,Papillomaviridae,Hepadnaviridae,Adenoviridae,Flaviviridae,Total.virome
+BM1,Black robin,Petroica traversi,Passeriformes,Adult,Mangere,16,Wild/unknown,73434233,1.90E-07,0,0,0,0,0,0,0,0,0.006440228
+BM2,Black robin,Petroica traversi,Passeriformes,Chick,Mangere,11,Wild/unknown,56965566,1.93E-06,0,0,0,0,0,0,0,7.02E-08,0.001488685
+BR1,Black robin,Petroica traversi,Passeriformes,Adult,Rangatira,16,Wild/unknown,68023354,4.41E-07,0,0,0,0,0,0,0,3.97E-07,0.002539954
+BR2,Black robin,Petroica traversi,Passeriformes,Adult,Rangatira,16,Wild/unknown,81211819,3.09E-07,0,0,0,0,0,0,0,0,0.038020412
+BR3,Black robin,Petroica traversi,Passeriformes,Chick,Rangatira,16,Wild/unknown,65623260,1.08E-06,0,0,9.02E-07,0,0,0,0,3.05E-07,0.11471621
+BR4,Black robin,Petroica traversi,Passeriformes,Chick,Rangatira,17,Wild/unknown,89292921,0,0,7.22E-07,0,0,0,0,0,0,0.00419059
+OM1,Fairy prion,Pachyptila turtur,Procellariiformes,Adult,Mangere,5,Wild/unknown,65980333,0,0,0,0,2.12E-07,0,0,0,0,0.000116342
+OM2,Fairy prion,Pachyptila turtur,Procellariiformes,Chick,Mangere,1,Wild/unknown,56092106,0,0,0,0,0,0,0,0,0,0.012224737
+OM3,Starling,Sturnus vulgaris,Passeriformes,Adult,Mangere,1,Wild/unknown,71422281,4.00E-06,0,0,0,0,2.66023E-07,0,0,0,0.009249599
+OM4,Starling,Sturnus vulgaris,Passeriformes,Chick,Mangere,4,Wild/unknown,65674763,0.036556899,3.65E-07,0,2.13E-07,7.55E-06,0,0,0,0,0.041558627
+OM5,Sooty shearwater ,Ardenna grisea,Procellariiformes,Adult,Mangere,12,Wild/unknown,49013711,2.04E-08,0,0,0,0,0,1.42817E-07,0,0,0.000146124
+OM6,Sooty shearwater ,Ardenna grisea,Procellariiformes,Adult,Mangere,11,Wild/unknown,76228795,0,0,0.001142499,0,0,2.62E-07,2.89E-07,2.62E-08,0,0.00184978
+OM7,Broad-billed prion,Pachyptila vittata,Procellariiformes,Adult,Mangere,3,Wild/unknown,79732781,3.54E-06,1.53E-06,0,0,1.33E-05,0,0,0,0,0.004806941
+OM8,Broad-billed prion,Pachyptila vittata,Procellariiformes,Chick,Mangere,12,Wild/unknown,68927944,3.81E-06,1.31E-06,0,2.47E-07,5.66E-07,0,0,0,0,0.002718478
+OM9,Grey-backed storm petrel,Garrodia nereis,Procellariiformes,Adult,Mangere,6,Wild/unknown,55283513,2.46E-05,0,0,0,0,2.38E-05,9.95E-07,0,1.75E-05,0.007006604
+OR1,Sooty shearwater ,Ardenna grisea,Procellariiformes,Adult,Rangatira,10,Wild/unknown,64910496,0,0,6.48E-06,0,0,0,1.01632E-06,0,0,2.88E-05
+OR2,Broad-billed prion,Pachyptila vittata,Procellariiformes,Adult,Rangatira,9,Wild/unknown,65605588,0,0,0,0,0,0,1.82911E-07,1.52E-08,0,0.000238357
+OR3,Broad-billed prion,Pachyptila vittata,Procellariiformes,Adult,Rangatira,9,Wild/unknown,64653735,0,0,0,0,0,0,0,0,0,0.000170701
+SP1,Shore plover,Thinornis novaeseelandiae,Charadriiformes,Adult,Rangatira,16,Wild/unknown,71824685,2.49218E-06,0,2.78E-08,0,0,0,3.06301E-07,0,0,0.000519595

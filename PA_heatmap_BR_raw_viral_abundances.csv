@@ -1,0 +1,20 @@
+﻿Sample.name,Species,Scientific name,Taxonomy,Age,Location,Num.indiv,Disease.status,Library.reads,Picornaviridae; Unclassified ,Picornaviridae; Hepatovirus,Picornaviridae; Megrivirus,Picornaviridae; Passerivirus,Picornaviridae; Phopivirus,Astroviridae,Herpesviridae,Rhabdoviridae,Hepeviridae,Picobirnaviridae,Caliciviridae,Reoviridae; Rotavirus A,Reoviridae; Rotavirus D,Papillomaviridae,Hantaviridae,Arenaviridae,Hepadnaviridae,Adenoviridae,Flaviviridae,Total.virome
+BM1,Black robin,Petroica traversi,Passeriformes; Petroicidae,Adult,Mangere,16,Wild/unknown,"73,434,233",13.96,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,472933.21
+BM2,Black robin,Petroica traversi,Passeriformes; Petroicidae,Pullus,Mangere,11,Wild/unknown,"56,965,566",0,0,0,110,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,84803.79
+BR1,Black robin,Petroica traversi,Passeriformes; Petroicidae,Adult,Rangatira,16,Wild/unknown,"68,023,354",0,30,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,27,172776.2
+BR2,Black robin,Petroica traversi,Passeriformes; Petroicidae,Adult,Rangatira,16,Wild/unknown,"81,211,819",25.06,0,0,0,0,0,0,0,0,92,0,0,0,0,0,0,0,0,0,3087706.84
+BR3,Black robin,Petroica traversi,Passeriformes; Petroicidae,Juvenile,Rangatira,16,Wild/unknown,"65,623,260",0,70.63,0,0,0,0,0,37,0,0,59.17,0,0,0,0,0,0,0,20,7528051.68
+BR4,Black robin,Petroica traversi,Passeriformes; Petroicidae,Juvenile,Rangatira,17,Wild/unknown,"89,292,921",0,0,0,0,0,0,64.5,0,0,0,0,0,0,0,0,0,0,0,0,374190.01
+OM1,Fairy prion,Pachyptila turtur,Procellariiformes; Procellariidae,Adult,Mangere,5,Wild/unknown,"65,980,333",0,0,0,0,0,0,0,11,0,0,0,0,14,0,0,0,0,0,0,7676.28
+OM2,Fairy prion,Pachyptila turtur,Procellariiformes; Procellariidae,Chick,Mangere,1,Wild/unknown,"56,092,106",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,685711.24
+OM3,Starling,Sturnus vulgaris,Passeriformes; Sturnidae,Adult,Mangere,1,Wild/unknown,"71,422,281",0,0,0,286,0,0,0,0,0,0,0,0,0,19,0,0,0,0,0,660627.48
+OM4,Starling,Sturnus vulgaris,Passeriformes; Sturnidae,Chick,Mangere,4,Wild/unknown,"65,674,763",11,0,0,2400854.65,0,24,0,0,0,0,14,496,0,0,0,0,0,0,0,2729352.96
+OM5,Sooty shearwater ,Ardenna grisea,Procellariiformes; Procellariidae,Adult,Mangere,12,Wild/unknown,"49,013,711",1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,7162.08
+OM6,Sooty shearwater ,Ardenna grisea,Procellariiformes; Procellariidae,Adult,Mangere,11,Wild/unknown,"76,228,795",0,0,0,0,0,0,87091.31,0,0,0,0,0,0,20,110.04,2,22,2,0,141006.52
+OM7,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Adult,Mangere,3,Wild/unknown,"79,732,781",282,0,0,0,0,122,0,0,0,0,0,0,1058.34,0,0,0,0,0,0,383270.74
+OM8,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Chick,Mangere,12,Wild/unknown,"68,927,944",0,151.95,89,0,21.67,90,0,0,0,0,17,0,39,0,0,0,0,0,0,187379.11
+OM9,Grey-backed storm petrel,Garrodia nereis,Procellariiformes; Oceanitidae,Adult,Mangere,6,Wild/unknown,"55,283,513",0,0,0,1359.5,0,0,0,0,0,0,0,0,0,1313.52,0,0,55,0,969.98,387349.7
+OR1,Sooty shearwater ,Ardenna grisea,Procellariiformes; Procellariidae,Adult,Rangatira,10,Wild/unknown,"64,910,496",0,0,0,0,0,0,420.83,0,0,0,0,0,0,0,0,0,65.97,0,0,1869.59
+OR2,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Adult,Rangatira,9,Wild/unknown,"65,605,588",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,1,0,15637.55
+OR3,Broad-billed prion,Pachyptila vittata,Procellariiformes; Procellariidae,Adult,Rangatira,9,Wild/unknown,"64,653,735",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11036.45
+SP1,Shore plover,Thinornis novaeseelandiae,Charadriiformes; Charadriidae,Adult,Rangatira,16,Wild/unknown,"71,824,685",179,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,22,0,0,37319.76
